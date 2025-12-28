@@ -10,7 +10,7 @@ const SellerRoute = ({ children }) => {
     return <Navigate to="/" replace state={{ from: location }} />
   }
 
-  if (acc.role !== 'seller') {
+  if (acc.role !== 'seller' && acc.role !== 'manager') {
     alert('Bạn không có quyền truy cập trang này! Chỉ dành cho Seller.')
     return <Navigate to="/home" replace />
   }
