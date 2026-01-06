@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import VendorItem from "../components/VendorItem"
 import api from "../api";
+import type from "../utils";
+
 function RecommendPage() {
   const [messages, setMessages] = useState([
     { id: 1, text: "Xin chào! Bạn đang lên kế hoạch cho đám cưới phải không? Hãy cho mình biết ý tưởng, ngân sách, phong cách hoặc số lượng khách nhé!", sender: "bot" },
@@ -41,13 +43,11 @@ function RecommendPage() {
     setMessages((prev) => [...prev, thinkingMessage]);
 
     try {
-      console.log("goi api")
-      const response = await api.post("/recommend/parse", {
+      const response = await api.post("/recommend/parse2", {
          userPrompt: inputText 
       });
 
       const data = response.data;
-console.log(data)
       // Xóa tin nhắn "đang suy nghĩ"
       setMessages((prev) => prev.filter((msg) => !msg.isLoading));
 
@@ -58,35 +58,47 @@ console.log(data)
 
       // Hiển thị thông tin đã parse
       if (parsed.budget) {
-        botResponseText += `💰 **Ngân sách**: ${parsed.budget.toLocaleString()} VND\n`;
+        botResponseText += `💰 Ngân sách: ${parsed.budget.toLocaleString()} VND\n`;
       } else {
-        botResponseText += `💰 **Ngân sách**: Chưa xác định\n`;
+      //  botResponseText += `💰 Ngân sách: Chưa xác định\n`;
       }
 
       if (parsed.guests) {
-        botResponseText += `👥 **Số lượng khách**: ${parsed.guests} người\n`;
+        botResponseText += `👥 Số lượng khách: ${parsed.guests} người\n`;
       } else {
-        botResponseText += `👥 **Số lượng khách**: Chưa xác định\n`;
+      //  botResponseText += `👥 Số lượng khách: Chưa xác định\n`;
       }
 
       if (parsed.style && parsed.style.length > 0) {
-        botResponseText += `🎨 **Phong cách**: ${parsed.style.join(", ")}\n`;
+        botResponseText += `🎨 Phong cách: ${parsed.style.join(", ")}\n`;
       } else {
-        botResponseText += `🎨 **Phong cách**: Chưa xác định\n`;
+      //  botResponseText += `🎨 Phong cách: Chưa xác định\n`;
       }
 
       if (parsed.items && parsed.items.length > 0) {
-        botResponseText += `📋 **Yêu cầu cụ thể**: ${parsed.items.join(", ")}\n`;
+        botResponseText += `📋 Yêu cầu cụ thể: ${parsed.items.join(", ")}\n`;
       }
 
       botResponseText += `\nDựa trên thông tin bạn cung cấp, đây là một số gợi ý dịch vụ phù hợp:`;
-console.log(suggested)
+      
+      // Group suggested items by type
+      const groupedByType = {};
+      if (suggested && Array.isArray(suggested)) {
+        suggested.forEach((item) => {
+          const itemType = item.type || 'other';
+          if (!groupedByType[itemType]) {
+            groupedByType[itemType] = [];
+          }
+          groupedByType[itemType].push(item);
+        });
+      }
+
       const botMessage = {
         id: Date.now() + 2,
         sender: "bot",
         content: {
           text: botResponseText,
-          suggested: suggested || [],
+          groupedByType: groupedByType,
         },
       };
 
@@ -125,25 +137,32 @@ console.log(suggested)
               className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-2xl ${
-                  msg.sender === "user"
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-800"
-                } rounded-2xl px-5 py-4 shadow-sm`}
+                className={`max-w-2xl ${ msg.sender === "user"? "bg-blue-500 text-white" : msg.content?.groupedByType ? "w-full max-w-6xl bg-white text-gray-800" : "bg-white text-gray-800" } rounded-2xl px-5 py-4 shadow-sm`}
               >
                 {msg.content ? (
                   <>
-                    <div className="whitespace-pre-wrap text-base">{msg.content.text}</div>
+                    <div className="whitespace-pre-wrap text-base mb-6">{msg.content.text}</div>
 
-                    {msg.content.suggested && msg.content.suggested.length > 0 && (
-                      <div className="mt-6">
-                        <div className="overflow-x-auto pb-4 -mx-4 px-4">
-                          <div className="flex gap-4">
-                            {msg.content.suggested.map((item) => (
-                              <VendorItem key={item._id} props={item} />
-                            ))}
+                    {msg.content.groupedByType && Object.keys(msg.content.groupedByType).length > 0 && (
+                      <div className="mt-6 space-y-8">
+                        {Object.entries(msg.content.groupedByType).map(([itemType, items]) => (
+                          <div key={itemType} className="space-y-4">
+                            <h3 className="text-xl font-bold text-gray-800 border-b-2 border-blue-500 pb-3 flex items-center gap-2">
+                              <span className="text-blue-500">📦</span>
+                              {type[itemType] || itemType}
+                              <span className="text-sm font-normal text-gray-500 ml-2">
+                                ({items.length} {items.length === 1 ? 'sản phẩm' : 'sản phẩm'})
+                              </span>
+                            </h3>
+                            <div className="overflow-x-auto pb-4 -mx-4 px-4">
+                              <div className="flex gap-4 min-w-max">
+                                {items.map((item) => (
+                                  <VendorItem key={item._id} props={item} />
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
                     )}
                   </>
@@ -172,11 +191,7 @@ console.log(suggested)
           <button
             onClick={handleSend}
             disabled={isLoading}
-            className={`px-8 py-3 rounded-full font-medium transition-colors ${
-              isLoading
-                ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
+            className={`px-8 py-3 rounded-full font-medium transition-colors ${isLoading   ? "bg-gray-400 text-gray-200 cursor-not-allowed"  : "bg-blue-500 text-white hover:bg-blue-600"}`}
           >
             {isLoading ? "Đang xử lý..." : "Gửi"}
           </button>

@@ -11,10 +11,10 @@ export default function ShopInfo({ shop }) {
         {/* Shop Header */}
         <div className="flex gap-4">
           <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg">
-            <LazyLoadImage src={shop?.logo??"/placeholder.svg"} alt={shop?.shopName} fill className="object-cover" />
+            <LazyLoadImage src={shop?.logo??"/placeholder.svg"} alt={shop?.name} fill className="object-cover" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-foreground">{shop?.shopName}</h3>
+            <h3 className="text-xl font-bold text-foreground">{shop?.name}</h3>
             {/* <div className="mt-2 flex items-center gap-2">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -50,8 +50,8 @@ export default function ShopInfo({ shop }) {
           </div>
           <div className="flex items-center gap-3">
             <Mail className="h-5 w-5 flex-shrink-0 text-primary" />
-            <a href={`mailto:${shop?.email}`} className="text-foreground hover:text-primary">
-              {shop?.email}
+            <a href={`mailto:${shop?.mail}`} className="text-foreground hover:text-primary">
+              {shop?.mail}
             </a>
           </div>
         </div>

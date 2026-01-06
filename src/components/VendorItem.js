@@ -23,16 +23,16 @@ export default function VendorItem({ props }) {
       .then((response) => setAdded(!added))
       .catch(error => console.log(error))
   }
-  useEffect(() => {
-    api.post(`/favourite/${acc._id}/checkVendorInFavourite`, {
-      vendorId: props._id
-    })
-      .then((response) => {
-        if (response.data.exists) setAdded(true)
-      }
-      )
-      .catch(error => console.log(error))
-  }, [])
+  // useEffect(() => {
+  //   api.post(`/favourite/${acc._id}/checkVendorInFavourite`, {
+  //     vendorId: props._id
+  //   })
+  //     .then((response) => {
+  //       if (response.data.exists) setAdded(true)
+  //     }
+  //     )
+  //     .catch(error => console.log(error))
+  // }, [])
   const addToPlan = async (e) => {
      e.preventDefault();     // Ngăn chuyển trang
     e.stopPropagation(); 
@@ -42,16 +42,16 @@ export default function VendorItem({ props }) {
       .then((response) => setInPlan(!inPlan))
       .catch(error => console.log(error))
   }
-  useEffect(() => {
-    api.post(`/plan/${acc._id}/checkVendorInPlan`, {
-      vendorId: props._id
-    })
-      .then((response) => {
-        if (response.data.exists) setInPlan(true)
-      }
-      )
-      .catch(error => console.log(error))
-  }, [])
+  // useEffect(() => {
+  //   api.post(`/plan/${acc._id}/checkVendorInPlan`, {
+  //     vendorId: props._id
+  //   })
+  //     .then((response) => {
+  //       if (response.data.exists) setInPlan(true)
+  //     }
+  //     )
+  //     .catch(error => console.log(error))
+  // }, [])
   const handleContact = async (e)=>{
      e.preventDefault();     // Ngăn chuyển trang
     e.stopPropagation(); 

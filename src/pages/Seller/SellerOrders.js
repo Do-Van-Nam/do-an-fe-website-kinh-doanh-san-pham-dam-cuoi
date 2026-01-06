@@ -22,7 +22,7 @@ export default function SellerOrders() {
     try {
       // Giả sử backend có route GET /order/seller để lấy đơn hàng của seller
       // Nếu chưa có route này, mày cần tạo ở backend sau
-      const res = await api.get('/order/seller', { withCredentials: true })
+      const res = await api.get(`/order/seller/${accId}`, { withCredentials: true })
       setOrders(res.data.orders || [])
     } catch (err) {
       console.error(err)
