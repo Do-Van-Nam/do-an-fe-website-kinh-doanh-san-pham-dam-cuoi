@@ -1,70 +1,129 @@
-# Getting Started with Create React App
+# 🎉 Nền tảng trực tuyến kinh doanh đồ cưới tích hợp hệ thống hỗ trợ lập kế hoạch tự động
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📌 Giới thiệu
+Đề tài tập trung vào việc **xây dựng một nền tảng trực tuyến cho thuê và mua bán đồ cưới**, đồng thời **tích hợp hệ thống lập kế hoạch đám cưới tự động** dựa trên ngân sách, phong cách và yêu cầu của người dùng.
 
-## Available Scripts
+Hệ thống giúp **kết nối khách hàng với các nhà cung cấp dịch vụ cưới**, hỗ trợ người dùng lập kế hoạch đám cưới một cách khoa học, tiết kiệm thời gian và tối ưu chi phí.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🎯 Mục tiêu đề tài
+- Xây dựng nền tảng thương mại điện tử chuyên biệt cho lĩnh vực cưới hỏi
+- Tự động hóa quá trình lập kế hoạch đám cưới
+- Hỗ trợ người dùng lựa chọn sản phẩm/dịch vụ phù hợp với ngân sách
+- Tạo môi trường kết nối hiệu quả giữa **nhà cung cấp** và **khách hàng**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🧩 Chức năng chính
 
-### `npm test`
+### 👤 Người dùng
+- Đăng ký / đăng nhập
+- Quản lý thông tin cá nhân
+- Tạo yêu cầu đám cưới (ngân sách, phong cách, số khách, dịch vụ mong muốn)
+- Nhận gợi ý kế hoạch cưới tự động
+- Thêm sản phẩm/dịch vụ vào giỏ hàng
+- Thanh toán trực tuyến
+- Theo dõi lịch trình & chi phí đám cưới
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🏪 Nhà cung cấp
+- Đăng tin sản phẩm / dịch vụ cưới
+- Quản lý sản phẩm, giá cả
+- Theo dõi đơn hàng và giao dịch
 
-### `npm run build`
+### 🛠️ Quản trị hệ thống (Admin)
+- Quản lý người dùng
+- Quản lý sản phẩm / dịch vụ
+- Quản lý giao dịch
+- Giám sát hoạt động hệ thống
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🤖 Hệ thống lập kế hoạch cưới tự động
+- Phân tích yêu cầu người dùng (ngân sách, phong cách, số lượng khách)
+- Tối ưu phân bổ ngân sách bằng **Linear Programming**
+- Gợi ý sản phẩm và dịch vụ phù hợp bằng **Recommendation System**
+- Tạo kế hoạch cưới bao gồm:
+  - Danh sách dịch vụ
+  - Chi phí chi tiết
+  - Lịch trình thực hiện
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🧪 Công nghệ sử dụng
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 🌐 Frontend
+- ReactJS
+- HTML, CSS, JavaScript
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### ⚙️ Backend
+- Node.js
+- Express.js
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 🗄️ Cơ sở dữ liệu
+- MongoDB
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🧠 Thuật toán & xử lý thông minh
+- Linear Programming (tối ưu ngân sách)
+- Recommendation System (gợi ý sản phẩm)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🗃️ Cơ sở dữ liệu ban đầu
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 📌 Users
+- Thông tin người dùng
+- Vai trò: khách hàng / nhà cung cấp / admin
 
-### Code Splitting
+### 📌 Wedding_Items
+- Sản phẩm & dịch vụ cưới
+- Ví dụ: váy cưới, vest, hoa cưới, chụp ảnh, trang trí…
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 📌 Wedding_Requirements
+- Yêu cầu đám cưới của người dùng
+- Ngân sách
+- Phong cách
+- Số lượng khách
+- Dịch vụ tùy chọn
 
-### Analyzing the Bundle Size
+### 📌 Wedding_Plans
+- Kế hoạch cưới tự động
+- Danh sách dịch vụ
+- Tổng chi phí
+- Lịch trình thực hiện
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 📌 Cart
+- Giỏ hàng thuê/mua sản phẩm
 
-### Making a Progressive Web App
+### 📌 Transactions
+- Giao dịch
+- Thanh toán
+- Trạng thái đơn hàng
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## ✅ Kết quả đạt được
+- Giảm thời gian lập kế hoạch đám cưới cho người dùng
+- Hỗ trợ tối ưu chi phí theo ngân sách
+- Tăng khả năng tiếp cận khách hàng cho nhà cung cấp
+- Xây dựng nền tảng có khả năng mở rộng trong tương lai
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 🚀 Hướng phát triển
+- Tích hợp AI nâng cao cho gợi ý phong cách cưới
+- Thêm chức năng đánh giá & xếp hạng nhà cung cấp
+- Ứng dụng di động (Mobile App)
+- Tích hợp ví điện tử & cổng thanh toán đa dạng
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 👨‍🎓 Thông tin đồ án
+- **Tên đề tài:** Phát triển nền tảng trực tuyến kinh doanh đồ cưới tích hợp hệ thống hỗ trợ lập kế hoạch tự động
+- **Loại:** Đồ án / Khóa luận tốt nghiệp
+- **Công nghệ chính:** ReactJS, Node.js, MongoDB
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 📬 Liên hệ
+Nếu bạn có góp ý hoặc câu hỏi, vui lòng liên hệ qua GitHub Issues hoặc email của tác giả.
