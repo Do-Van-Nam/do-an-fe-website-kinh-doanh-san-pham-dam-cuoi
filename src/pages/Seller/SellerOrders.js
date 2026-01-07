@@ -22,11 +22,10 @@ export default function SellerOrders() {
 
   const fetchOrders = async () => {
     try {
-      const res = await api.get(`/order/seller/${sellerId}`, {
-        withCredentials: true,
-      })
-      console.log('Đơn hàng seller:', res.data) // debug
-      setOrders(res.data.orders || res.data || [])
+      // Giả sử backend có route GET /order/seller để lấy đơn hàng của seller
+      // Nếu chưa có route này, mày cần tạo ở backend sau
+      const res = await api.get(`/order/seller/${accId}`, { withCredentials: true })
+      setOrders(res.data.orders || [])
     } catch (err) {
       console.error('Load orders error:', err.response || err)
       setError('Không thể tải đơn hàng. Vui lòng thử lại sau.')
