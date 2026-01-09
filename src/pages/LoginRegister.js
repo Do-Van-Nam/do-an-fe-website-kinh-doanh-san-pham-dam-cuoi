@@ -204,13 +204,13 @@ export default function Home() {
             {signupFailed && <p className="text-danger mt-2">Tài khoản đã tồn tại!</p>}
           </div>
 
-          {login && (
+          {/* {login && (
             <p className="text-end mb-3">
               <span style={{ fontSize: '14px', color: '#3d3c3dbe', cursor: 'pointer' }}>
                 Quên mật khẩu?
               </span>
             </p>
-          )}
+          )} */}
 
           <button type="submit" className="btn btn-primary-custom w-100 rounded-3 py-2 fw-semibold">
             {login ? 'Đăng nhập' : 'Đăng ký'}
