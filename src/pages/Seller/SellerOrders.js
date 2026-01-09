@@ -1,7 +1,8 @@
 import { useEffect, useState, useContext } from 'react'
-import { Link } from 'react-router-dom' // 👈 DÒNG MỚI
+import { Link } from 'react-router-dom'
 import { AppContext } from '../../AppContext'
 import api from '../../api'
+
 export default function SellerOrders() {
   const { acc } = useContext(AppContext)
   const accId = acc?.id || acc?._id
@@ -20,8 +21,6 @@ export default function SellerOrders() {
 
   const fetchOrders = async () => {
     try {
-      // Giả sử backend có route GET /order/seller để lấy đơn hàng của seller
-      // Nếu chưa có route này, mày cần tạo ở backend sau
       const res = await api.get(`/order/seller/${accId}`, { withCredentials: true })
       setOrders(res.data.orders || [])
     } catch (err) {
@@ -29,6 +28,27 @@ export default function SellerOrders() {
       alert('Không load được đơn hàng')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const updateOrderStatus = async (orderId, itemId, newStatus) => {
+    if (!window.confirm(`Xác nhận chuyển trạng thái thành "${newStatus === 'confirmed' ? 'Đã xác nhận' : 'Đang giao'}"?`)) {
+      return
+    }
+
+    try {
+      await api.put(`/order/${orderId}/status`, {
+        itemId,
+        status: newStatus,
+      }, { withCredentials: true })
+
+      alert('Cập nhật trạng thái thành công!')
+
+      // Cập nhật lại danh sách (cách đơn giản nhất)
+      fetchOrders()
+    } catch (err) {
+      console.error('Lỗi cập nhật trạng thái:', err)
+      alert('Cập nhật thất bại. Vui lòng thử lại.')
     }
   }
 
@@ -85,27 +105,16 @@ export default function SellerOrders() {
         ) : (
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[1000px]">
                 <thead className="bg-gray-100">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Mã đơn
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Khách hàng
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Sản phẩm
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Tổng tiền
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-                      Ngày đặt
-                    </th>
-                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">
-                      Trạng thái
-                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mã đơn</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Khách hàng</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Sản phẩm</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tổng tiền</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Ngày đặt</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Trạng thái</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Hành động</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -119,7 +128,7 @@ export default function SellerOrders() {
                       </td>
                       <td className="px-6 py-4 text-sm">
                         {order.items.map((item, idx) => (
-                          <div key={idx}>
+                          <div key={idx} className="mb-1">
                             {item.name} x {item.quantity}
                           </div>
                         ))}
@@ -131,21 +140,50 @@ export default function SellerOrders() {
                       <td className="px-6 py-4 text-center">
                         <span
                           className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                            order.items[0].status
+                            order.items[0]?.status
                           )}`}
                         >
-                          {order.items[0].status === 'pending'
+                          {order.items[0]?.status === 'pending'
                             ? 'Chờ xác nhận'
-                            : order.items[0].status === 'confirmed'
+                            : order.items[0]?.status === 'confirmed'
                             ? 'Đã xác nhận'
-                            : order.items[0].status === 'shipping'
+                            : order.items[0]?.status === 'shipping'
                             ? 'Đang giao'
-                            : order.items[0].status === 'delivered'
+                            : order.items[0]?.status === 'delivered'
                             ? 'Đã giao'
-                            : order.items[0].status === 'cancelled'
+                            : order.items[0]?.status === 'cancelled'
                             ? 'Đã hủy'
-                            : order.items[0].status}
+                            : order.items[0]?.status || 'Không xác định'}
                         </span>
+                      </td>
+
+                      {/* Cột Hành động - Dropdown */}
+                      <td className="px-6 py-4 text-center">
+                        {order.items[0]?.status === 'pending' || order.items[0]?.status === 'confirmed' && (
+                          <select
+                            onChange={(e) => {
+                              const newStatus = e.target.value
+                              if (newStatus) {
+                                updateOrderStatus(order._id, order.items[0].itemId, newStatus)
+                                e.target.value = '' // reset dropdown sau khi chọn
+                              }
+                            }}
+                            defaultValue=""
+                            className="px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                          >
+                            <option value="" disabled>
+                              Chọn hành động...
+                            </option>
+                            <option value="confirmed">Xác nhận đơn hàng</option>
+                            <option value="shipping">Đã giao cho đơn vị vận chuyển</option>
+                          </select>
+                        )}
+
+                        {order.items[0]?.status !== 'pending' && order.items[0]?.status !== 'confirmed' && (
+                          <span className="text-gray-500 text-sm italic">
+                            Đã xử lý
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

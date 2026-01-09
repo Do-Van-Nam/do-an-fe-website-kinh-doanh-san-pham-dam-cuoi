@@ -10,6 +10,7 @@ import { AppContext } from "../../AppContext"
 const tabs = [
   { key: "all", label: "Tất cả" },
   { key: "pending", label: "Chờ xác nhận" },
+  { key: "confirmed", label: "Đã xác nhận" },
   { key: "cancelled", label: "Đã hủy" },
   { key: "shipping", label: "Đang giao" },
   { key: "completed", label: "Hoàn thành" },
@@ -19,6 +20,10 @@ const statusConfig = {
   pending: {
     label: "Chờ xác nhận",
     className: "bg-amber-100 text-amber-700",
+  },
+  confirmed: {
+    label: "Đã xác nhận",
+    className: "bg-green-100 text-green-700",
   },
   shipping: {
     label: "Đang giao",
