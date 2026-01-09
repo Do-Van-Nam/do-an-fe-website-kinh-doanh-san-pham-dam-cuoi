@@ -127,24 +127,24 @@ export default function SellerOrders() {
                       <td className="px-6 py-4 text-sm font-semibold text-pink-600">
                         {Number(order.totalAmount).toLocaleString('vi-VN')} ₫
                       </td>
-                      <td className="px-6 py-4 text-sm">{formatDate(order.createdAt)}</td>
+                      <td className="px-6 py-4 text-sm">{formatDate(order.orderDate)}</td>
                       <td className="px-6 py-4 text-center">
                         <span
                           className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                            order.status
+                            order.items[0].status
                           )}`}
                         >
-                          {order.status === 'pending'
+                          {order.items[0].status === 'pending'
                             ? 'Chờ xác nhận'
-                            : order.status === 'confirmed'
+                            : order.items[0].status === 'confirmed'
                             ? 'Đã xác nhận'
-                            : order.status === 'shipping'
+                            : order.items[0].status === 'shipping'
                             ? 'Đang giao'
-                            : order.status === 'delivered'
+                            : order.items[0].status === 'delivered'
                             ? 'Đã giao'
-                            : order.status === 'cancelled'
+                            : order.items[0].status === 'cancelled'
                             ? 'Đã hủy'
-                            : order.status}
+                            : order.items[0].status}
                         </span>
                       </td>
                     </tr>

@@ -1,104 +1,92 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 import api from '../../api'
+import type from '../../utils'
 
-import Sidebar from '../../components/Sidebar/Sidebar'
-import Header from '../../components/Header/Header'
 import VendorItem from '../../components/VendorItem'
-import RequestQuoteForm from '../../components/RequestQuoteForm/RequestQuoteForm'
-export default function Marketplace({ props1 }) {    
+
+export default function Marketplace({ props1 }) {
 
     const location = useLocation()
-    const type = location.pathname.split('/').pop()
-    const [items,setItems] = useState([])
-    
+    const type1 = location.pathname.split('/').pop()
+    const [items, setItems] = useState([])
+    // 1. Tạo state để lưu giá trị ô tìm kiếm
+    const [searchTerm, setSearchTerm] = useState('')
 
-    useEffect(()=>{
-      try {
-        api.get(`/vendoritem/type/${type}`)
-            .then(response =>{
-              setItems(response.data.vendoritem)
-              console.log(response.data.vendoritem)
-            }
-            )
-            .catch(error=>
-              console.log(error)
-            )
-      } catch (error) {
-        console.log(error)
-      }
-    },[type])
+    useEffect(() => {
+        try {
+            api.get(`/vendoritem/type/${type1}`)
+                .then(response => {
+                    setItems(response.data.vendoritem)
+                })
+                .catch(error => console.log(error))
+        } catch (error) {
+            console.log(error)
+        }
+    }, [type1])
 
-    console.log(type)
+    // 2. Hàm loại bỏ dấu tiếng Việt
+    const removeAccents = (str) => {
+        return str
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D');
+    }
+
+    // 3. Logic lọc sản phẩm
+    const filteredItems = items.filter(item => {
+        // Giả sử tên sản phẩm nằm trong trường item.name (bạn hãy đổi lại cho đúng với API của bạn)
+        const itemName = item.name || ''; 
+        const search = removeAccents(searchTerm.toLowerCase());
+        const target = removeAccents(itemName.toLowerCase());
+        
+        return target.includes(search);
+    });
+
     return (
         <div className='d-flex flex-wrap' style={{ padding: '8vw' }}>
-        <div className='d-flex justify-content-between' style={{ width: '100%' }}>
-          <h3>{items.length} Wedding Venues tại Hà Nội</h3>
-          <div className='d-flex' >
-            <div className="dropdown" style={{ height: '100%' }}>
-              <a
-                className="btn btn-secondary dropdown-toggle"
-                style={{ height: '100%' }}
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Địa điểm tổ chức
-              </a>
-              <ul className="dropdown-menu">
-                <li><a className="dropdown-item" href="#">Action</a></li>
-                <li><a className="dropdown-item" href="#">Another action</a></li>
-                <li><a className="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </div>
-      
-            <div className="form-floating">
-              <input
-                type="text"
-                className="form-control"
+            <div className='d-flex justify-content-between' style={{ width: '100%' }}>
+                {/* Hiển thị số lượng dựa trên danh sách đã lọc */}
+                <h3>{filteredItems.length} {type[type1]} tại Hà Nội</h3>
                 
-                id="floatingInput"
-                placeholder="Vị trí"
-              />
-              <label htmlFor="floatingInput">Vị trí</label>
-            </div>
-      
-            <button
-              type="button"
-              className="btn btn-lg rounded"
-              style={{
-                backgroundColor: '#ff44cb',
-                color: 'white',
-                fontWeight: '500',
-                fontSize: '16px',
-                padding: '10px 20px',
-                width: '20%'
-              }}
-            >
-              <i className="bi bi-search"></i>
-            </button>
-          </div>
-        </div>
-              
-        <div className='d-flex ' style={{ width: '100%' }}>
-        <button type="button" class="btn btn-outline-light rounded-pill border border-black" 
-        style={{color:'black'}}
-        >Sắp xếp</button>
-         <button type="button" class="ms-2 btn btn-outline-light rounded-pill border border-black" 
-        style={{color:'black'}}
-        >Giá</button>
-         <button type="button" class="ms-2 btn btn-outline-light rounded-pill border border-black" 
-        style={{color:'black'}}
-        >Khoảng cách</button>
-      </div>
-              {items.map((e,i)=>   (
+                <div className='d-flex' >
+                    <div className="form-floating">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="floatingInput"
+                            placeholder="Tìm kiếm"
+                            // 4. Kết nối ô input với state
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <label htmlFor="floatingInput">Tìm kiếm theo tên...</label>
+                    </div>
 
-                <VendorItem key={i} props={e}/>
-              ))}
-      
-      </div>
-      
+                    <button
+                        type="button"
+                        className="btn btn-lg rounded"
+                        style={{
+                            backgroundColor: '#ff44cb',
+                            color: 'white',
+                            fontWeight: '500',
+                            fontSize: '16px',
+                            padding: '10px 20px',
+                            width: '20%'
+                        }}
+                    >
+                        <i className="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div className='d-flex ' style={{ width: '100%' }}></div>
+
+            {/* 5. Render danh sách đã được lọc (filteredItems thay vì items) */}
+            {filteredItems.map((e, i) => (
+                <VendorItem key={i} props={e} />
+            ))}
+        </div>
     )
 }
